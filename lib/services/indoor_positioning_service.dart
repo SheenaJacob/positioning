@@ -249,7 +249,6 @@ class BluetoothScanListener extends BleScanListener {
 
   @override
   void onScanResults(List<BleDevice> bleDevices) {
-    debugPrint('Device found');
     for (var element in bleDevices) {
       debugPrint(element.name);
     }

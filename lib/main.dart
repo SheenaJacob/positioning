@@ -1,11 +1,16 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:logging/logging.dart';
 import 'package:positioning/services/service_locator.dart';
 
 import 'view_models/positioning_view_model.dart';
 
 void main() {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    debugPrint('${record.level.name}: ${record.time}: ${record.message}');
+  });
   setupServiceLocator();
   runApp(const MyApp());
 }
