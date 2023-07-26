@@ -52,6 +52,14 @@ class IndoorPositioningService implements Disposable {
 
   double get referenceAzimuth => _referenceAzimuth.value;
 
+  // ------------------ Notification -------------------//
+
+  final Observable<String> _notification = Observable('');
+
+  /// Return notifications from the device
+  String get notification => _notification.value;
+
+
   // ------------------  Connection Status -------------------//
 
   final Observable<bool> _isConnected = Observable(false);
@@ -97,22 +105,26 @@ class IndoorPositioningService implements Disposable {
       EasyLocateSdk easyLocateSdk = EasyLocateSdk();
       // Starts scanning and looks for tracelets for 5 seconds
       debugPrint('Start Scanning for Tracelets');
+      runInAction(() => _notification.value = 'Scanning for Tracelets');
       await easyLocateSdk.startTraceletScan(
         scanListener,
         scanTimeout: 10,
       );
+      runInAction(() => _notification.value = 'Scanning Complete');
       debugPrint('Scan complete');
       // Gets the closest bluetooth tracelet available
       final bluetoothTracelet = scanListener.bleDevice;
       debugPrint('Tracelets Found ${bluetoothTracelet?.name}');
+      runInAction(() => _notification.value = 'Tracelets Found ${bluetoothTracelet?.name}');
       // Stops bluetooth tracelet scanning
       await easyLocateSdk.stopBleScan();
       debugPrint('Stop Scanning');
-
+      runInAction(() => _notification.value = 'Stop Scanning');
       // Continue only if a ble Tracelet is found
       if (bluetoothTracelet != null) {
         // Connect to the bluetooth tracelet
         debugPrint('Connecting to Tracelet');
+        runInAction(() => _notification.value = 'Connecting to Tracelet ${bluetoothTracelet.name}');
         _positioningApi = await _easyLocateSdk.connectBleTracelet(
           bluetoothTracelet,
           ConnectionListener(
@@ -121,6 +133,7 @@ class IndoorPositioningService implements Disposable {
               debugPrint(
                   'Tracelet Connected. To verify look for a blue flashing light on the device');
               // A blue LED blinks on the connected device. This can be used to verify if you're connected to the right device
+              runInAction(() => _notification.value = 'Tracelet Connected. To verify look for a blue flashing light on the device');
               await _positioningApi!.showMe();
 
               debugPrint('Setting channel to Channel 5');
@@ -150,6 +163,7 @@ class IndoorPositioningService implements Disposable {
 
               // Start positioning. Uses the position listener to get wgs84 values
               debugPrint('Start Positioning');
+              runInAction(() => _notification.value = 'Start Positioning');
               await _positioningApi!.startPositioning(
                 PositionListener(
                   onWgs84PositionUpdated: (position) {
@@ -168,6 +182,7 @@ class IndoorPositioningService implements Disposable {
               });
               // Takes 1 second after disconnectTracelet() runs to execute
               debugPrint('Tracelet Disconnected');
+              runInAction(() => _notification.value = 'Tracelet Disconnected');
             },
           ),
         );
@@ -177,6 +192,7 @@ class IndoorPositioningService implements Disposable {
         _bluetoothTracelet.value = null;
         _isConnected.value = false;
         _wgs84Position.value = null;
+        _notification.value = error.toString();
       });
       debugPrint(error.toString());
     }
@@ -186,6 +202,7 @@ class IndoorPositioningService implements Disposable {
   void disconnectTracelet() async {
     if (_positioningApi != null) {
       debugPrint('Disconnecting Tracelet');
+      runInAction(() => _notification.value = 'Disconnecting Tracelet');
       await _positioningApi!.stopPositioning();
       // The tracelet takes 1s to disconnect
       _positioningApi!.disconnect();

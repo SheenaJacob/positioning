@@ -76,9 +76,22 @@ class IndoorPositioning extends StatelessWidget {
                   )),
               Expanded(
                 child: Center(
-                  child: Text(_viewModel.position == null
-                      ? 'No position'
-                      : 'Latitude: ${_viewModel.position!.lat} \nLongitude: ${_viewModel.position!.lon} \nAccuracy: ${_viewModel.position!.acc}'),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _viewModel.notification,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.lightBlue,
+                        ),
+                      ),
+                      Text(_viewModel.position == null
+                          ? 'No position'
+                          : 'Latitude: ${_viewModel.position!.lat} \nLongitude: ${_viewModel.position!.lon} \nAccuracy: ${_viewModel.position!.acc}'),
+                    ],
+                  ),
                 ),
               ),
               Align(

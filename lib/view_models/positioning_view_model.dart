@@ -13,6 +13,8 @@ class PositioningViewModel {
   final IndoorPositioningService _positioningService =
       getIt<IndoorPositioningService>();
 
+  String get notification => _positioningService.notification;
+
   Wgs84Position? get position => _positioningService.wgs84position;
 
   bool get isConnected => _positioningService.isConnected;
