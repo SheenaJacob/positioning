@@ -48,32 +48,33 @@ class IndoorPositioning extends StatelessWidget {
           return Column(
             children: [
               Align(
-                  alignment: Alignment.topRight,
-                  child: PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
-                    onSelected: (value) async {
-                      if (value == 'import_wgs84') {
-                        final FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                                type: FileType.custom,
-                                allowedExtensions: ['json']);
-                        if (result != null && result.files.isNotEmpty) {
-                          _viewModel.importFile(result.files.first.path!);
-                        }
+                alignment: Alignment.topRight,
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) async {
+                    if (value == 'import_wgs84') {
+                      final FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['json']);
+                      if (result != null && result.files.isNotEmpty) {
+                        _viewModel.importFile(result.files.first.path!);
                       }
-                    },
-                    itemBuilder: (BuildContext ctx) {
-                      return [
-                        const PopupMenuItem<String>(
-                          value: 'import_wgs84',
-                          child: ListTile(
-                            leading: Icon(Icons.import_export),
-                            title: Text('Import Wgs84 Config'),
-                          ),
+                    }
+                  },
+                  itemBuilder: (BuildContext ctx) {
+                    return [
+                      const PopupMenuItem<String>(
+                        value: 'import_wgs84',
+                        child: ListTile(
+                          leading: Icon(Icons.import_export),
+                          title: Text('Import Wgs84 Config'),
                         ),
-                      ];
-                    },
-                  )),
+                      ),
+                    ];
+                  },
+                ),
+              ),
               Expanded(
                 child: Center(
                   child: Column(
@@ -88,7 +89,7 @@ class IndoorPositioning extends StatelessWidget {
                         ),
                       ),
                       Text(_viewModel.position == null
-                          ? 'No position'
+                          ? ''
                           : 'Latitude: ${_viewModel.position!.lat} \nLongitude: ${_viewModel.position!.lon} \nAccuracy: ${_viewModel.position!.acc}'),
                     ],
                   ),

@@ -108,7 +108,7 @@ class IndoorPositioningService implements Disposable {
       runInAction(() => _notification.value = 'Scanning for Tracelets');
       await easyLocateSdk.startTraceletScan(
         scanListener,
-        scanTimeout: 10,
+        scanTimeout: 5,
       );
       runInAction(() => _notification.value = 'Scanning Complete');
       debugPrint('Scan complete');
@@ -162,13 +162,16 @@ class IndoorPositioningService implements Disposable {
               await _positioningApi!.setMotionCheckInterval(0);
 
               // Start positioning. Uses the position listener to get wgs84 values
-              debugPrint('Start Positioning');
-              runInAction(() => _notification.value = 'Start Positioning');
+              debugPrint('Start Positioning..');
+              runInAction(() => _notification.value = 'Start Positioning...');
               await _positioningApi!.startPositioning(
                 PositionListener(
                   onWgs84PositionUpdated: (position) {
                     runInAction(
-                          () => _wgs84Position.value = position,
+                          () {
+                            runInAction(() => _notification.value = 'Positions Received');
+                            return _wgs84Position.value = position;
+                          },
                     );
                   },
                 ),
